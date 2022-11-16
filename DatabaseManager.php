@@ -7,7 +7,7 @@ class DatabaseManager {
     private $user = 'root';
     private $password = '';
 
-    private $database = 'sujungimai';
+    private $database = 'classicmodels';
 
     protected $conn; 
 
@@ -90,6 +90,53 @@ class DatabaseManager {
         } catch (PDOException $e) {
             echo "Klaida: " . $e->getMessage();
         }
+    }
+
+    public function databaseCount($table) {
+        $sql = "SELECT COUNT(*) as Count FROM `$table`";
+        try {
+
+            
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); //kad rodytu klaidas
+            $stmt = $this->conn->prepare($sql);
+            //vykdyti uzklausa
+            $stmt->execute();
+
+            //rezultato pasidejimas
+
+            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC); // lenteles pasirnkti duomenys yra paverciami i asociatyvu masyva
+            $result = $stmt->fetchAll();
+
+            return $result[0]['Count']; //visas kompanijas kaip asociatyvu masyva
+
+        } catch (PDOException $e) {
+            echo "Klaida: " . $e->getMessage();
+        }
+    } 
+
+    public function selectLimit($table, $offset, $limit) {
+        //$limit yra kiek rodyti per puslapi
+        //$offset yra kiek praleisti irasu nuo pradzios
+        $sql = "SELECT * FROM `$table` LIMIT $offset, $limit";
+        try {
+
+            
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); //kad rodytu klaidas
+            $stmt = $this->conn->prepare($sql);
+            //vykdyti uzklausa
+            $stmt->execute();
+
+            //rezultato pasidejimas
+
+            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC); // lenteles pasirnkti duomenys yra paverciami i asociatyvu masyva
+            $result = $stmt->fetchAll();
+
+            return $result; //visas kompanijas kaip asociatyvu masyva
+
+        } catch (PDOException $e) {
+            echo "Klaida: " . $e->getMessage();
+        }
+
     }
 
     public function insert($table, $cols, $values) {    
